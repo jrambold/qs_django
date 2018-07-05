@@ -17,7 +17,8 @@ def food_show(request, food_id):
 	return JsonResponse(json.loads(food), safe=False)
 
 def meal_index(request):
-    return JsonResponse({'Hello': 'World'})
+	meals = serializers.serialize("json", Meal.objects.all())
+	return JsonResponse(json.loads(meals), safe=False)
 
 def meal_show(request, meal_id):
     return JsonResponse({'Hello': 'World'})
