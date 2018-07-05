@@ -15,6 +15,7 @@ def food_index(request):
     	foods = serializers.serialize("json", Food.objects.all())
     	return JsonResponse(json.loads(foods), safe=False)
     elif request.method == 'POST':
+        # 400 if not found
         food_data = json.loads(request.body)['food']
         food = Food(name = food_data['name'], calories = food_data['calories'])
         food.save()
@@ -25,10 +26,12 @@ def food_index(request):
 @csrf_exempt
 def food_show(request, food_id):
     if request.method == 'GET':
+        # 404 if not found
     	food = serializers.serialize("json", Food.objects.filter(id=food_id))
     	return JsonResponse(json.loads(food), safe=False)
 
     elif request.method == 'PUT' or request.method == 'PATCH':
+        # 400 if not found
         food = Food.objects.get(id=food_id)
         food.name = food_data['name']
         food.calories = food_data['calories']
@@ -38,6 +41,7 @@ def food_show(request, food_id):
         return JsonResponse(json.loads(food), safe=False)
 
     elif request.method == 'DELETE':
+        # needs 204 successful and 404 not found
         food = Food.objects.get(id=food_id)
         food.delete()
         return JsonResponse({'Hello': 'world'})
@@ -47,18 +51,21 @@ def meal_index(request):
     return JsonResponse(json.loads(meals), safe=False)
 
 def meal_show(request, meal_id):
+    # needs to 404 if not found
     meal = serializers.serialize("json", Meal.objects.filter(id=meal_id))
     return JsonResponse(json.loads(meal), safe=False)
 
 @csrf_exempt
 def mf_show(request, meal_id, food_id):
     if request.method == 'POST':
+        # needs to 404 if not found 201 successful
         food = Food.objects.get(id=food_id)
         meal = Meal.objects.get(id=meal_id)
         meal.foods.add(food)
         return JsonResponse({"message": f"Successfully added {food} to {meal}"})
 
     elif request.method == 'DELETE':
+        # needs to 404 if not found
         food = Food.objects.get(id=food_id)
         meal = Meal.objects.get(id=meal_id)
         meal.foods.remove(food)
