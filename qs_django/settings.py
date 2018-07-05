@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'requests',
     'diary',
-    'django_rq',
+    'dj_database_url',
 ]
 
 MIDDLEWARE = [
