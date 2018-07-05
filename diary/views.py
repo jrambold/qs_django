@@ -59,4 +59,7 @@ def mf_show(request, meal_id, food_id):
         return JsonResponse({"message": f"Successfully added {food} to {meal}"})
 
     elif request.method == 'DELETE':
-        return JsonResponse({'Hello': 'world'})
+        food = Food.objects.get(id=food_id)
+        meal = Meal.objects.get(id=meal_id)
+        meal.foods.remove(food)
+        return JsonResponse({"message": f"Successfully removed {food} to {meal}"})
