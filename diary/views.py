@@ -9,7 +9,9 @@ import os
 # Create your views here.
 
 def food_index(request):
-    return JsonResponse({'Hello': 'World'})
+	data = serializers.serialize("json", Food.objects.all())
+	r = json.loads(data)
+	return JsonResponse(r, safe=False)
 
 def food_show(request):
     return JsonResponse({'Hello': 'World'})
