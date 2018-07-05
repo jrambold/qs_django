@@ -22,6 +22,7 @@ def food_index(request):
         food = serializers.serialize("json", Food.objects.filter(id=food.id))
         return JsonResponse(json.loads(food), safe=False)
 
+@csrf_exempt
 def food_show(request, food_id):
     if request.method == 'GET':
     	food = serializers.serialize("json", Food.objects.filter(id=food_id))
