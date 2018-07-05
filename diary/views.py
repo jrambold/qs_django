@@ -37,6 +37,8 @@ def food_show(request, food_id):
         return JsonResponse(json.loads(food), safe=False)
 
     elif request.method == 'DELETE':
+        food = Food.objects.get(id=food_id)
+        food.delete()
         return JsonResponse({'Hello': 'world'})
 
 def meal_index(request):
