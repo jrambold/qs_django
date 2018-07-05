@@ -23,8 +23,21 @@ def food_index(request):
         return JsonResponse(json.loads(food), safe=False)
 
 def food_show(request, food_id):
-	food = serializers.serialize("json", Food.objects.filter(id=food_id))
-	return JsonResponse(json.loads(food), safe=False)
+    if request.method == 'GET':
+    	food = serializers.serialize("json", Food.objects.filter(id=food_id))
+    	return JsonResponse(json.loads(food), safe=False)
+
+    elif request.method == 'PUT' or request.method == 'PATCH':
+        food = Food.objects.get(id=food_id)
+        food.name = food_data['name']
+        food.calories = food_data['calories']
+        food.save()
+
+        food = serializers.serialize("json", Food.objects.filter(id=food_id))
+        return JsonResponse(json.loads(food), safe=False)
+
+    elif request.method == 'DELETE':
+        return JsonResponse({'Hello': 'world'})
 
 def meal_index(request):
     meals = serializers.serialize("json", Meal.objects.all())
