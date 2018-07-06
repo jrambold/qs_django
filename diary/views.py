@@ -11,25 +11,22 @@ import os
 @csrf_exempt
 def food_index(request):
     if request.method == 'GET':
-    	foods = serializers.serialize("json", Food.objects.all())
-    	return JsonResponse(json.loads(foods), safe=False)
+        foods = list(Food.objects.all().values('id', 'name', 'calories'))
+        return JsonResponse(foods, safe=False)
     elif request.method == 'POST':
         try:
             food_data = json.loads(request.body)['food']
             food = Food(name = food_data['name'], calories = food_data['calories'])
             food.save()
+            return JsonResponse({'id':food.id, 'name':food.name, 'calories':food.calories})
         except:
             return HttpResponse('Bad Request', status=400)
-
-        food = serializers.serialize("json", Food.objects.filter(id=food.id))
-        return JsonResponse(json.loads(food), safe=False)
 
 @csrf_exempt
 def food_show(request, food_id):
     if request.method == 'GET':
-        get_object_or_404(Food, pk=food_id)
-        food = serializers.serialize("json", Food.objects.filter(id=food_id))
-        return JsonResponse(json.loads(food), safe=False)
+        food = get_object_or_404(Food, pk=food_id)
+        return JsonResponse({'id':food.id, 'name':food.name, 'calories':food.calories})
 
     elif request.method == 'PUT' or request.method == 'PATCH':
         try:
@@ -41,11 +38,9 @@ def food_show(request, food_id):
             food.name = food_data['name']
             food.calories = food_data['calories']
             food.save()
+            return JsonResponse({'id':food.id, 'name':food.name, 'calories':food.calories})
         except:
             return HttpResponse('Bad Request', status=400)
-
-        food = serializers.serialize("json", Food.objects.filter(id=food_id))
-        return JsonResponse(json.loads(food), safe=False)
 
     elif request.method == 'DELETE':
         food = get_object_or_404(Food, pk=food_id)
@@ -53,13 +48,16 @@ def food_show(request, food_id):
         return HttpResponse(status=204)
 
 def meal_index(request):
-    meals = serializers.serialize("json", Meal.objects.all())
-    return JsonResponse(json.loads(meals), safe=False)
+    meal_list = []
+    for meal in Meal.objects.all():
+        food_list = list(meal.foods.values('id', 'name', 'calories'))
+        meal_list.append({'id':meal.id, 'name':meal.name, 'foods':food_list})
+    return JsonResponse(meal_list, safe=False)
 
 def meal_show(request, meal_id):
-    get_object_or_404(Meal, pk=meal_id)
-    meal = serializers.serialize("json", Meal.objects.filter(id=meal_id))
-    return JsonResponse(json.loads(meal), safe=False)
+    meal = get_object_or_404(Meal, pk=meal_id)
+    food_list = list(meal.foods.values('id', 'name', 'calories'))
+    return JsonResponse({'id':meal.id, 'name':meal.name, 'foods':food_list})
 
 @csrf_exempt
 def mf_show(request, meal_id, food_id):
