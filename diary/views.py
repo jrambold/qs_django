@@ -3,7 +3,6 @@ from django.http import HttpResponse, JsonResponse
 from diary.models import Food, Meal
 from django.core import serializers
 from django.views.decorators.csrf import csrf_exempt
-import requests
 import json
 import os
 
