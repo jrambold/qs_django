@@ -1,1 +1,1 @@
-web: gunicorn diary.wsgi
+web: gunicorn qs_django.wsgi
