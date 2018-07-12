@@ -1,4 +1,4 @@
-# Quantified Self Back-end Rails
+# Quantified Self Back-end Django
 
 ## Initial Setup
 
